@@ -1,0 +1,309 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Mis tres agentes y el programa que mueve la plata — Explicado</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #20201e;
+      --muted: #66635d;
+      --paper: #fdfcf8;
+      --alfredo: #dfeedd;
+      --changuito: #ffe7aa;
+      --cesar: #dce9f8;
+      --gringotts: #eadff2;
+      --wall: #d96852;
+      --agreement: #56836a;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: ui-rounded, "SF Pro Rounded", system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+    }
+    main, footer, .topbar { width: min(100% - 2rem, 68rem); margin-inline: auto; }
+    .topbar { padding-top: 1.2rem; }
+    .topbar a { color: var(--muted); font-weight: 700; text-decoration: none; }
+    .topbar a:hover { color: var(--ink); }
+    header { padding: clamp(4rem, 10vw, 8rem) 0 3rem; max-width: 54rem; }
+    .eyebrow { font-size: .78rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { font-size: clamp(3rem, 8vw, 6.5rem); line-height: .94; letter-spacing: -.065em; margin: .7rem 0 1.8rem; }
+    .dek { font-size: clamp(1.2rem, 2.5vw, 1.6rem); line-height: 1.45; max-width: 43rem; color: #45433f; }
+    .byline { margin-top: 1.7rem; color: var(--muted); font-size: .95rem; }
+    section { padding: clamp(4rem, 9vw, 7rem) 0; border-top: 1.5px solid #d8d5cc; }
+    h2 { font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1; letter-spacing: -.05em; margin: 0 0 1.2rem; }
+    h3 { font-size: 1.05rem; margin: 0 0 .4rem; }
+    p { max-width: 43rem; }
+    .lead { font-size: 1.2rem; color: #45433f; }
+    .note { border-left: 4px solid var(--ink); padding: .3rem 0 .3rem 1.2rem; margin: 2rem 0; font-size: 1.15rem; font-weight: 650; }
+    .diagram {
+      margin: 2.5rem 0 0;
+      overflow-x: auto;
+      padding: 1rem 0 1.4rem;
+      -webkit-overflow-scrolling: touch;
+    }
+    .diagram svg { display: block; min-width: 850px; width: 100%; height: auto; }
+    .diagram.small svg { min-width: 680px; }
+    svg { font-family: ui-rounded, "SF Pro Rounded", system-ui, sans-serif; }
+    svg .box { stroke: var(--ink); stroke-width: 2; }
+    svg .hand { stroke-linecap: round; stroke-linejoin: round; }
+    svg .label { font-size: 17px; font-weight: 800; fill: var(--ink); }
+    svg .tiny { font-size: 13px; fill: #55534e; }
+    svg .flow { stroke: var(--ink); stroke-width: 2; fill: none; marker-end: url(#arrow); }
+    svg .agreement { stroke: var(--agreement); stroke-width: 3; stroke-dasharray: 8 8; fill: none; }
+    svg .wall { stroke: var(--wall); stroke-width: 4; fill: none; }
+    .legend { display: flex; flex-wrap: wrap; gap: 1rem 1.8rem; margin: 1.2rem 0 0; color: var(--muted); font-size: .9rem; }
+    .legend span { display: inline-flex; align-items: center; gap: .55rem; }
+    .line { display: inline-block; width: 2.6rem; border-top: 4px solid var(--wall); }
+    .line.dashed { border-color: var(--agreement); border-top-style: dashed; }
+    .piece { display: grid; grid-template-columns: minmax(0, .8fr) minmax(0, 1.2fr); gap: clamp(2rem, 6vw, 5rem); align-items: start; }
+    .number { font-size: .82rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+    .facts { display: grid; gap: 1rem; }
+    .fact { padding: 1rem 1.1rem; border: 1.5px solid var(--ink); border-radius: 12px 9px 14px 8px; background: #fff; box-shadow: 3px 3px 0 var(--ink); }
+    .fact p { margin: 0; }
+    .fact.wall-card { border-color: var(--wall); box-shadow: 3px 3px 0 var(--wall); }
+    .fact.agreement-card { border-style: dashed; border-color: var(--agreement); box-shadow: none; }
+    .piece.alfredo h2::after, .piece.changuito h2::after, .piece.cesar h2::after, .piece.gringotts h2::after {
+      content: ""; display: block; width: 3rem; height: .55rem; margin-top: .8rem; border: 1.5px solid var(--ink); transform: rotate(-2deg);
+    }
+    .piece.alfredo h2::after { background: var(--alfredo); }
+    .piece.changuito h2::after { background: var(--changuito); transform: rotate(2deg); }
+    .piece.cesar h2::after { background: var(--cesar); }
+    .piece.gringotts h2::after { background: var(--gringotts); transform: rotate(1deg); }
+    .identity { font-size: .95rem; color: var(--muted); background: #f2f0e9; border-radius: 8px; padding: .8rem 1rem; }
+    .safety-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 2.5rem; }
+    .safety-grid article { border: 1.5px solid var(--ink); border-radius: 13px 9px 15px 10px; padding: 1.3rem; background: #fff; }
+    .safety-grid article:nth-child(even) { transform: rotate(.3deg); }
+    .safety-grid p { margin-bottom: 0; color: #55534e; }
+    .closing { font-size: clamp(1.5rem, 4vw, 2.5rem); line-height: 1.3; letter-spacing: -.03em; max-width: 52rem; }
+    footer { padding: 2.5rem 0 4rem; color: var(--muted); font-size: .9rem; }
+    @media (max-width: 720px) {
+      main, footer, .topbar { width: min(100% - 1.5rem, 68rem); }
+      .piece { grid-template-columns: 1fr; gap: 1.5rem; }
+      .safety-grid { grid-template-columns: 1fr; }
+      .diagram { margin-inline: -.75rem; padding-left: .75rem; }
+      .diagram::after { content: "Deslizá para ver el diagrama completo →"; display: block; margin-top: .8rem; color: var(--muted); font-size: .8rem; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="topbar"><a href="index.html">← Explicado</a></nav>
+  <main>
+    <header>
+      <div class="eyebrow">Cómo está armado mi sistema personal</div>
+      <h1>Mis tres agentes y el programa que mueve la plata</h1>
+      <p class="dek">
+        No construí un asistente que hace todo. Separé correo, compras, código y pagos
+        porque cada trabajo necesita capacidades —y límites— distintos.
+      </p>
+      <p class="byline">Contado por Pablo. Escrito por César, uno de los agentes de esta historia.</p>
+    </header>
+
+    <section aria-labelledby="mapa-title">
+      <h2 id="mapa-title">Cuatro chats, cuatro piezas</h2>
+      <p class="lead">
+        Desde Telegram parecen parecidos. Detrás de los bots hay tres agentes que interpretan
+        pedidos y un programa de pagos que hace siempre exactamente lo mismo.
+      </p>
+      <div class="diagram" role="img" aria-label="Pablo se comunica por Telegram con tres agentes que comparten una Mac y con Gringotts, un programa separado por la red.">
+        <svg viewBox="0 0 1080 580" aria-hidden="true">
+          <defs>
+            <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#20201e"></path>
+            </marker>
+          </defs>
+          <rect x="20" y="226" width="120" height="92" rx="14" fill="#fff" class="box"></rect>
+          <text x="80" y="263" text-anchor="middle" class="label">Pablo</text>
+          <text x="80" y="288" text-anchor="middle" class="tiny">persona</text>
+
+          <rect x="205" y="30" width="190" height="520" rx="22" fill="#f3f0e8" class="box"></rect>
+          <text x="300" y="62" text-anchor="middle" class="label">Telegram</text>
+          <rect x="230" y="91" width="140" height="65" rx="12" fill="#dfeedd" class="box"></rect>
+          <rect x="230" y="184" width="140" height="65" rx="12" fill="#ffe7aa" class="box"></rect>
+          <rect x="230" y="277" width="140" height="65" rx="12" fill="#dce9f8" class="box"></rect>
+          <rect x="230" y="430" width="140" height="65" rx="12" fill="#eadff2" class="box"></rect>
+          <text x="300" y="119" text-anchor="middle" class="label">bot</text><text x="300" y="140" text-anchor="middle" class="tiny">Alfredo</text>
+          <text x="300" y="212" text-anchor="middle" class="label">bot</text><text x="300" y="233" text-anchor="middle" class="tiny">Changuito</text>
+          <text x="300" y="305" text-anchor="middle" class="label">bot</text><text x="300" y="326" text-anchor="middle" class="tiny">César</text>
+          <text x="300" y="458" text-anchor="middle" class="label">bot</text><text x="300" y="479" text-anchor="middle" class="tiny">Gringotts</text>
+
+          <rect x="470" y="30" width="300" height="365" rx="22" fill="#fff" class="box"></rect>
+          <text x="620" y="62" text-anchor="middle" class="label">una Mac compartida</text>
+          <rect x="495" y="91" width="250" height="72" rx="13" fill="#dfeedd" class="box"></rect>
+          <rect x="495" y="184" width="250" height="72" rx="13" fill="#ffe7aa" class="box"></rect>
+          <rect x="495" y="277" width="250" height="72" rx="13" fill="#dce9f8" class="box"></rect>
+          <text x="620" y="121" text-anchor="middle" class="label">Alfredo</text><text x="620" y="144" text-anchor="middle" class="tiny">asistente personal</text>
+          <text x="620" y="214" text-anchor="middle" class="label">Changuito</text><text x="620" y="237" text-anchor="middle" class="tiny">lista de la casa</text>
+          <text x="620" y="307" text-anchor="middle" class="label">César</text><text x="620" y="330" text-anchor="middle" class="tiny">proyectos de código</text>
+          <line x1="480" y1="174" x2="760" y2="174" class="agreement hand"></line>
+          <line x1="480" y1="267" x2="760" y2="267" class="agreement hand"></line>
+
+          <line x1="850" y1="18" x2="850" y2="560" class="wall hand"></line>
+          <text x="866" y="48" class="tiny" fill="#d96852">la red</text>
+          <rect x="910" y="184" width="150" height="165" rx="20" fill="#eadff2" class="box"></rect>
+          <text x="985" y="228" text-anchor="middle" class="label">Gringotts</text>
+          <text x="985" y="255" text-anchor="middle" class="tiny">programa</text>
+          <text x="985" y="276" text-anchor="middle" class="tiny">de pagos</text>
+          <text x="985" y="319" text-anchor="middle" class="tiny">no improvisa</text>
+
+          <path d="M140 272 C170 272 174 124 230 124" class="flow hand"></path>
+          <path d="M140 272 C172 272 176 216 230 216" class="flow hand"></path>
+          <path d="M140 272 C172 272 176 309 230 309" class="flow hand"></path>
+          <path d="M140 272 C170 272 174 462 230 462" class="flow hand"></path>
+          <path d="M370 124 L495 127" class="flow hand"></path>
+          <path d="M370 216 L495 220" class="flow hand"></path>
+          <path d="M370 309 L495 313" class="flow hand"></path>
+          <path d="M370 462 C690 462 754 267 910 267" class="flow hand"></path>
+          <path d="M745 127 C805 127 842 219 910 236" class="flow hand"></path>
+          <text x="805" y="162" text-anchor="middle" class="tiny">leer / proponer</text>
+        </svg>
+      </div>
+      <div class="legend" aria-label="Leyenda de límites">
+        <span><i class="line"></i> Pared: el sistema lo impide</span>
+        <span><i class="line dashed"></i> Acuerdo: decidimos no hacerlo</span>
+      </div>
+      <p class="note">
+        No todos los límites son iguales. Algunos los impide el sistema; otros son acuerdos
+        que sostengo yo.
+      </p>
+    </section>
+
+    <section class="piece alfredo" aria-labelledby="alfredo-title">
+      <div>
+        <div class="number">01 · agente</div>
+        <h2 id="alfredo-title">Alfredo</h2>
+        <p class="lead">Mi asistente personal, siempre disponible.</p>
+      </div>
+      <div class="facts">
+        <div class="fact"><h3>De qué se encarga</h3><p>Me acompaña durante el día y prepara un resumen diario.</p></div>
+        <div class="fact"><h3>Cómo le hablo</h3><p>Por su bot privado de Telegram.</p></div>
+        <div class="fact"><h3>Qué puede hacer</h3><p>Leer mi correo sin modificarlo; mandar mails desde su propia dirección; crear eventos en su calendario e invitarme; consultar pagos y proponer uno a Gringotts.</p></div>
+        <div class="fact wall-card"><h3>Paredes</h3><p>Google rechaza si intenta escribir en mi calendario. Gringotts no le ofrece ninguna forma de confirmar o ejecutar un pago.</p></div>
+        <div class="fact agreement-card"><h3>Acuerdos</h3><p>Trata lo que llega por mail como información, no como órdenes. No usa las capacidades de los otros agentes aunque comparta máquina con ellos.</p></div>
+      </div>
+    </section>
+
+    <section class="piece changuito" aria-labelledby="changuito-title">
+      <div>
+        <div class="number">02 · agente</div>
+        <h2 id="changuito-title">Changuito</h2>
+        <p class="lead">La memoria compartida de las compras de casa.</p>
+      </div>
+      <div class="facts">
+        <div class="fact"><h3>De qué se encarga</h3><p>Mantiene la lista de compras de mi familia.</p></div>
+        <div class="fact"><h3>Cómo le hablamos</h3><p>En un grupo familiar de Telegram, mediante su propio bot.</p></div>
+        <div class="fact"><h3>Qué puede hacer</h3><p>Agregar, quitar y ordenar elementos de la lista a partir de lo que conversamos.</p></div>
+        <div class="fact wall-card"><h3>Paredes</h3><p>Hoy no afirmo ninguna que no esté realmente impuesta por otro sistema.</p></div>
+        <div class="fact agreement-card"><h3>Acuerdos</h3><p>No lee correo, no trabaja con código, no busca acceder a pagos y no se comunica con los otros agentes. Como comparte máquina, eso es un acuerdo, no una garantía.</p></div>
+      </div>
+    </section>
+
+    <section class="piece cesar" aria-labelledby="cesar-title">
+      <div>
+        <div class="number">03 · agente</div>
+        <h2 id="cesar-title">César</h2>
+        <p class="lead">El que trabaja el código de mis proyectos.</p>
+      </div>
+      <div class="facts">
+        <div class="fact"><h3>De qué se encarga</h3><p>Convierte pedidos por chat en cambios revisables dentro de mis proyectos.</p></div>
+        <div class="fact"><h3>Cómo le hablo</h3><p>Por su bot privado de Telegram.</p></div>
+        <div class="fact"><h3>Qué puede hacer</h3><p>Trabajar en repos habilitados con su propia cuenta de GitHub, proponer cambios y mostrarme resultados visibles.</p></div>
+        <div class="fact wall-card"><h3>Paredes</h3><p>Si intenta entrar a un repo al que no fue invitado, GitHub devuelve un error. Lo probamos.</p></div>
+        <div class="fact agreement-card"><h3>Acuerdos</h3><p>No usa correo, compras ni capacidades ajenas aunque comparta máquina con los otros agentes.</p></div>
+        <p class="identity"><strong>Identidad no es capacidad.</strong> César tiene una casilla para registrar su cuenta de GitHub, pero no tiene herramientas para leer ni mandar correo.</p>
+        <div class="fact"><h3>Cómo reviso sin leer código</h3><p>Miro qué hace el resultado y si pasaron los controles automáticos. Reviso efectos, no líneas de código.</p></div>
+      </div>
+    </section>
+
+    <section class="piece gringotts" aria-labelledby="gringotts-title">
+      <div>
+        <div class="number">04 · programa</div>
+        <h2 id="gringotts-title">Gringotts</h2>
+        <p class="lead">Parece otro agente desde Telegram, pero no piensa: ante el mismo pedido hace siempre lo mismo.</p>
+      </div>
+      <div class="facts">
+        <div class="fact"><h3>De qué se encarga</h3><p>Consulta información, prepara confirmaciones y ejecuta pagos que una persona confirmó.</p></div>
+        <div class="fact"><h3>Cómo le hablo</h3><p>Directamente por su bot de Telegram. Alfredo llega por otra entrada, mucho más limitada.</p></div>
+        <div class="fact"><h3>Qué puede hacer</h3><p>Mostrar información de una operación, validar una propuesta, crear una confirmación pendiente y ejecutar solo después de mi confirmación directa.</p></div>
+        <div class="fact wall-card"><h3>Paredes</h3><p>La entrada de Alfredo solo permite leer y proponer. No existen ahí las funciones para confirmar, ejecutar, cancelar ni leer la confirmación pendiente.</p></div>
+        <div class="fact agreement-card"><h3>Acuerdos</h3><p>Ningún acuerdo crítico protege el dinero. Los controles importantes funcionan aunque un agente no obedezca.</p></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="pago-title">
+      <h2 id="pago-title">Una propuesta no es un pago</h2>
+      <p class="lead">
+        Alfredo puede preparar el comienzo. La plata solo se mueve después de que yo confirmo
+        en mi conversación directa con Gringotts.
+      </p>
+      <div class="diagram small" role="img" aria-label="Alfredo propone un pago, Gringotts aplica controles, y solo Pablo puede confirmar para que se ejecute.">
+        <svg viewBox="0 0 1000 310" aria-hidden="true">
+          <defs>
+            <marker id="arrow-payment" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+              <path d="M 0 0 L 10 5 L 0 10 z" fill="#20201e"></path>
+            </marker>
+          </defs>
+          <rect x="20" y="105" width="150" height="82" rx="14" fill="#dfeedd" class="box"></rect>
+          <text x="95" y="139" text-anchor="middle" class="label">Alfredo</text><text x="95" y="163" text-anchor="middle" class="tiny">propone</text>
+          <rect x="235" y="76" width="200" height="140" rx="14" fill="#fff" class="box"></rect>
+          <text x="335" y="107" text-anchor="middle" class="label">controles</text>
+          <text x="335" y="133" text-anchor="middle" class="tiny">encendido · libre</text>
+          <text x="335" y="157" text-anchor="middle" class="tiny">destinatario aprobado</text>
+          <text x="335" y="181" text-anchor="middle" class="tiny">límites vigentes</text>
+          <rect x="500" y="105" width="190" height="82" rx="14" fill="#eadff2" class="box"></rect>
+          <text x="595" y="137" text-anchor="middle" class="label">pendiente</text><text x="595" y="162" text-anchor="middle" class="tiny">“propuso Alfredo”</text>
+          <rect x="520" y="235" width="150" height="62" rx="14" fill="#fff" class="box"></rect>
+          <text x="595" y="272" text-anchor="middle" class="label">Pablo confirma</text>
+          <rect x="770" y="105" width="200" height="82" rx="14" fill="#eadff2" class="box"></rect>
+          <text x="870" y="139" text-anchor="middle" class="label">Gringotts</text><text x="870" y="163" text-anchor="middle" class="tiny">ejecuta</text>
+          <path d="M170 146 L235 146" stroke="#20201e" stroke-width="2" fill="none" marker-end="url(#arrow-payment)"></path>
+          <path d="M435 146 L500 146" stroke="#20201e" stroke-width="2" fill="none" marker-end="url(#arrow-payment)"></path>
+          <path d="M595 235 L595 188" stroke="#d96852" stroke-width="4" fill="none" marker-end="url(#arrow-payment)"></path>
+          <path d="M690 146 L770 146" stroke="#20201e" stroke-width="2" fill="none" marker-end="url(#arrow-payment)"></path>
+          <line x1="720" y1="55" x2="720" y2="225" class="wall hand"></line>
+          <text x="735" y="78" class="tiny" fill="#d96852">solo una persona</text>
+        </svg>
+      </div>
+      <p>
+        Si ya hay una confirmación abierta, la nueva propuesta se rechaza: no reemplaza ni
+        hace cola. Y la respuesta que vuelve a Alfredo omite a propósito cualquier dato que
+        pudiera servirle para aprobarla. La única pieza que toca dinero real es, justamente,
+        la que no improvisa.
+      </p>
+    </section>
+
+    <section aria-labelledby="limites-title">
+      <h2 id="limites-title">Dónde están las paredes de verdad</h2>
+      <p class="lead">
+        Separar nombres y chats ordena el trabajo. Pero una separación real existe recién
+        cuando otro sistema rechaza la acción o directamente no ofrece esa función.
+      </p>
+      <div class="safety-grid">
+        <article><h3>Tres vecinos, una misma casa</h3><p>Alfredo, Changuito y César comparten máquina y usuario. Sus límites internos son acuerdos sostenidos por configuración.</p></article>
+        <article><h3>Una instrucción no quita poder</h3><p>Escribir “no lo hagas” puede orientar a un agente, pero no elimina una capacidad que sigue disponible.</p></article>
+        <article><h3>La red marca la pared</h3><p>Gringotts vive separado. Desde la Mac solo existen las entradas estrechas que ofrece: leer y proponer.</p></article>
+        <article><h3>La última puerta es humana</h3><p>Alfredo propone. Yo confirmo. No hay una segunda ruta para ejecutar el pago.</p></article>
+      </div>
+    </section>
+
+    <section>
+      <p class="closing">
+        No busqué que cada pieza pudiera resolver cualquier cosa. Busqué responsabilidades
+        claras, límites visibles y paredes reales justo donde un error costaría más.
+      </p>
+    </section>
+  </main>
+
+  <footer>
+    <p>
+      Este explicador fue escrito por <strong>César</strong>, uno de los agentes que describe,
+      bajo las decisiones editoriales de Pablo.
+    </p>
+  </footer>
+</body>
+</html>
