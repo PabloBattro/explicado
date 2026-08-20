@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="es">
+<html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Mis tres agentes y el programa que mueve la plata — Explicado</title>
+  <title>Three agents and the program that moves the money — Explained</title>
   <style>
     :root {
       color-scheme: light;
@@ -87,30 +87,29 @@
       .piece { grid-template-columns: 1fr; gap: 1.5rem; }
       .safety-grid { grid-template-columns: 1fr; }
       .diagram { margin-inline: -.75rem; padding-left: .75rem; }
-      .diagram::after { content: "Deslizá para ver el diagrama completo →"; display: block; margin-top: .8rem; color: var(--muted); font-size: .8rem; }
+      .diagram::after { content: "Swipe to see the full diagram →"; display: block; margin-top: .8rem; color: var(--muted); font-size: .8rem; }
     }
   </style>
 </head>
 <body>
-  <nav class="topbar"><a href="index.html">← Explicado</a></nav>
+  <nav class="topbar"><a href="index.html">← Explained</a></nav>
   <main>
     <header>
-      <div class="eyebrow">Cómo está armado mi sistema personal</div>
-      <h1>Mis tres agentes y el programa que mueve la plata</h1>
+      <div class="eyebrow">A small personal assistant setup</div>
+      <h1>Three agents and the program that moves the money</h1>
       <p class="dek">
-        No construí un asistente que hace todo. Separé correo, compras, código y pagos
-        porque cada trabajo necesita capacidades —y límites— distintos.
+        One assistant does not need to do everything. Email, groceries, code, and payments
+        are handled separately because each job needs different access — and different limits.
       </p>
-      <p class="byline">Contado por Pablo. Escrito por César, uno de los agentes de esta historia.</p>
     </header>
 
-    <section aria-labelledby="mapa-title">
-      <h2 id="mapa-title">Cuatro chats, cuatro piezas</h2>
+    <section aria-labelledby="map-title">
+      <h2 id="map-title">Four chats, four tools</h2>
       <p class="lead">
-        Desde Telegram parecen parecidos. Detrás de los bots hay tres agentes que interpretan
-        pedidos y un programa de pagos que hace siempre exactamente lo mismo.
+        They look similar in Telegram. Behind the bots, three agents can understand requests
+        and make choices. The payment program simply follows a fixed set of steps.
       </p>
-      <div class="diagram" role="img" aria-label="Pablo se comunica por Telegram con tres agentes que comparten una Mac y con Gringotts, un programa separado por la red.">
+      <div class="diagram" role="img" aria-label="A person uses Telegram to talk to three agents on a shared Mac and to Gringotts, a payment program on a separate server.">
         <svg viewBox="0 0 1080 580" aria-hidden="true">
           <defs>
             <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -118,8 +117,8 @@
             </marker>
           </defs>
           <rect x="20" y="226" width="120" height="92" rx="14" fill="#fff" class="box"></rect>
-          <text x="80" y="263" text-anchor="middle" class="label">Pablo</text>
-          <text x="80" y="288" text-anchor="middle" class="tiny">persona</text>
+          <text x="80" y="263" text-anchor="middle" class="label">Person</text>
+          <text x="80" y="288" text-anchor="middle" class="tiny">one user</text>
 
           <rect x="205" y="30" width="190" height="520" rx="22" fill="#f3f0e8" class="box"></rect>
           <text x="300" y="62" text-anchor="middle" class="label">Telegram</text>
@@ -133,23 +132,23 @@
           <text x="300" y="458" text-anchor="middle" class="label">bot</text><text x="300" y="479" text-anchor="middle" class="tiny">Gringotts</text>
 
           <rect x="470" y="30" width="300" height="365" rx="22" fill="#fff" class="box"></rect>
-          <text x="620" y="62" text-anchor="middle" class="label">una Mac compartida</text>
+          <text x="620" y="62" text-anchor="middle" class="label">one shared Mac</text>
           <rect x="495" y="91" width="250" height="72" rx="13" fill="#dfeedd" class="box"></rect>
           <rect x="495" y="184" width="250" height="72" rx="13" fill="#ffe7aa" class="box"></rect>
           <rect x="495" y="277" width="250" height="72" rx="13" fill="#dce9f8" class="box"></rect>
-          <text x="620" y="121" text-anchor="middle" class="label">Alfredo</text><text x="620" y="144" text-anchor="middle" class="tiny">asistente personal</text>
-          <text x="620" y="214" text-anchor="middle" class="label">Changuito</text><text x="620" y="237" text-anchor="middle" class="tiny">lista de la casa</text>
-          <text x="620" y="307" text-anchor="middle" class="label">César</text><text x="620" y="330" text-anchor="middle" class="tiny">proyectos de código</text>
+          <text x="620" y="121" text-anchor="middle" class="label">Alfredo</text><text x="620" y="144" text-anchor="middle" class="tiny">personal assistant</text>
+          <text x="620" y="214" text-anchor="middle" class="label">Changuito</text><text x="620" y="237" text-anchor="middle" class="tiny">grocery list</text>
+          <text x="620" y="307" text-anchor="middle" class="label">César</text><text x="620" y="330" text-anchor="middle" class="tiny">code projects</text>
           <line x1="480" y1="174" x2="760" y2="174" class="agreement hand"></line>
           <line x1="480" y1="267" x2="760" y2="267" class="agreement hand"></line>
 
           <line x1="850" y1="18" x2="850" y2="560" class="wall hand"></line>
-          <text x="866" y="48" class="tiny" fill="#d96852">la red</text>
+          <text x="866" y="48" class="tiny" fill="#d96852">the network</text>
           <rect x="910" y="184" width="150" height="165" rx="20" fill="#eadff2" class="box"></rect>
           <text x="985" y="228" text-anchor="middle" class="label">Gringotts</text>
-          <text x="985" y="255" text-anchor="middle" class="tiny">programa</text>
-          <text x="985" y="276" text-anchor="middle" class="tiny">de pagos</text>
-          <text x="985" y="319" text-anchor="middle" class="tiny">no improvisa</text>
+          <text x="985" y="255" text-anchor="middle" class="tiny">payment</text>
+          <text x="985" y="276" text-anchor="middle" class="tiny">program</text>
+          <text x="985" y="319" text-anchor="middle" class="tiny">no guesswork</text>
 
           <path d="M140 272 C170 272 174 124 230 124" class="flow hand"></path>
           <path d="M140 272 C172 272 176 216 230 216" class="flow hand"></path>
@@ -160,88 +159,88 @@
           <path d="M370 309 L495 313" class="flow hand"></path>
           <path d="M370 462 C690 462 754 267 910 267" class="flow hand"></path>
           <path d="M745 127 C805 127 842 219 910 236" class="flow hand"></path>
-          <text x="805" y="162" text-anchor="middle" class="tiny">leer / proponer</text>
+          <text x="805" y="162" text-anchor="middle" class="tiny">read / suggest</text>
         </svg>
       </div>
-      <div class="legend" aria-label="Leyenda de límites">
-        <span><i class="line"></i> Pared: el sistema lo impide</span>
-        <span><i class="line dashed"></i> Acuerdo: decidimos no hacerlo</span>
+      <div class="legend" aria-label="Types of limits">
+        <span><i class="line"></i> Wall: the system blocks it</span>
+        <span><i class="line dashed"></i> Agreement: a rule everyone follows</span>
       </div>
       <p class="note">
-        No todos los límites son iguales. Algunos los impide el sistema; otros son acuerdos
-        que sostengo yo.
+        Not every limit works the same way. Some are blocked by the system. Others are rules
+        the setup is expected to follow.
       </p>
     </section>
 
     <section class="piece alfredo" aria-labelledby="alfredo-title">
       <div>
-        <div class="number">01 · agente</div>
+        <div class="number">01 · agent</div>
         <h2 id="alfredo-title">Alfredo</h2>
-        <p class="lead">Mi asistente personal, siempre disponible.</p>
+        <p class="lead">A personal assistant that is always around.</p>
       </div>
       <div class="facts">
-        <div class="fact"><h3>De qué se encarga</h3><p>Me acompaña durante el día y prepara un resumen diario.</p></div>
-        <div class="fact"><h3>Cómo le hablo</h3><p>Por su bot privado de Telegram.</p></div>
-        <div class="fact"><h3>Qué puede hacer</h3><p>Leer mi correo sin modificarlo; mandar mails desde su propia dirección; crear eventos en su calendario e invitarme; consultar pagos y proponer uno a Gringotts.</p></div>
-        <div class="fact wall-card"><h3>Paredes</h3><p>Google rechaza si intenta escribir en mi calendario. Gringotts no le ofrece ninguna forma de confirmar o ejecutar un pago.</p></div>
-        <div class="fact agreement-card"><h3>Acuerdos</h3><p>Trata lo que llega por mail como información, no como órdenes. No usa las capacidades de los otros agentes aunque comparta máquina con ellos.</p></div>
+        <div class="fact"><h3>Its job</h3><p>Help with everyday tasks and put together a daily summary.</p></div>
+        <div class="fact"><h3>How to reach it</h3><p>Through a private Telegram bot.</p></div>
+        <div class="fact"><h3>What it can do</h3><p>Read the user's email without changing it, send mail from its own address, create events on its own calendar and send invites, check payment details, and suggest a payment to Gringotts.</p></div>
+        <div class="fact wall-card"><h3>Walls</h3><p>Google rejects attempts to write on the user's calendar. Gringotts gives Alfredo no way to confirm or run a payment.</p></div>
+        <div class="fact agreement-card"><h3>Agreements</h3><p>Email content is treated as information, not as instructions. Alfredo does not use the other agents' tools, even though they share a computer.</p></div>
       </div>
     </section>
 
     <section class="piece changuito" aria-labelledby="changuito-title">
       <div>
-        <div class="number">02 · agente</div>
+        <div class="number">02 · agent</div>
         <h2 id="changuito-title">Changuito</h2>
-        <p class="lead">La memoria compartida de las compras de casa.</p>
+        <p class="lead">The shared grocery list for the household.</p>
       </div>
       <div class="facts">
-        <div class="fact"><h3>De qué se encarga</h3><p>Mantiene la lista de compras de mi familia.</p></div>
-        <div class="fact"><h3>Cómo le hablamos</h3><p>En un grupo familiar de Telegram, mediante su propio bot.</p></div>
-        <div class="fact"><h3>Qué puede hacer</h3><p>Agregar, quitar y ordenar elementos de la lista a partir de lo que conversamos.</p></div>
-        <div class="fact wall-card"><h3>Paredes</h3><p>Hoy no afirmo ninguna que no esté realmente impuesta por otro sistema.</p></div>
-        <div class="fact agreement-card"><h3>Acuerdos</h3><p>No lee correo, no trabaja con código, no busca acceder a pagos y no se comunica con los otros agentes. Como comparte máquina, eso es un acuerdo, no una garantía.</p></div>
+        <div class="fact"><h3>Its job</h3><p>Keep the household grocery list up to date.</p></div>
+        <div class="fact"><h3>How to reach it</h3><p>Through its bot in a family Telegram group.</p></div>
+        <div class="fact"><h3>What it can do</h3><p>Add, remove, and sort items based on the family's messages.</p></div>
+        <div class="fact wall-card"><h3>Walls</h3><p>None are claimed here unless another system actually enforces them.</p></div>
+        <div class="fact agreement-card"><h3>Agreements</h3><p>Changuito does not read email, work on code, look for payment access, or talk to the other agents. Because they share a computer, these are rules, not guarantees.</p></div>
       </div>
     </section>
 
     <section class="piece cesar" aria-labelledby="cesar-title">
       <div>
-        <div class="number">03 · agente</div>
+        <div class="number">03 · agent</div>
         <h2 id="cesar-title">César</h2>
-        <p class="lead">El que trabaja el código de mis proyectos.</p>
+        <p class="lead">The agent that works on code projects.</p>
       </div>
       <div class="facts">
-        <div class="fact"><h3>De qué se encarga</h3><p>Convierte pedidos por chat en cambios revisables dentro de mis proyectos.</p></div>
-        <div class="fact"><h3>Cómo le hablo</h3><p>Por su bot privado de Telegram.</p></div>
-        <div class="fact"><h3>Qué puede hacer</h3><p>Trabajar en repos habilitados con su propia cuenta de GitHub, proponer cambios y mostrarme resultados visibles.</p></div>
-        <div class="fact wall-card"><h3>Paredes</h3><p>Si intenta entrar a un repo al que no fue invitado, GitHub devuelve un error. Lo probamos.</p></div>
-        <div class="fact agreement-card"><h3>Acuerdos</h3><p>No usa correo, compras ni capacidades ajenas aunque comparta máquina con los otros agentes.</p></div>
-        <p class="identity"><strong>Identidad no es capacidad.</strong> César tiene una casilla para registrar su cuenta de GitHub, pero no tiene herramientas para leer ni mandar correo.</p>
-        <div class="fact"><h3>Cómo reviso sin leer código</h3><p>Miro qué hace el resultado y si pasaron los controles automáticos. Reviso efectos, no líneas de código.</p></div>
+        <div class="fact"><h3>Its job</h3><p>Turn chat requests into changes that can be reviewed in a code project.</p></div>
+        <div class="fact"><h3>How to reach it</h3><p>Through a private Telegram bot.</p></div>
+        <div class="fact"><h3>What it can do</h3><p>Work on approved GitHub projects with its own account, suggest changes, and show results that can be checked without reading code.</p></div>
+        <div class="fact wall-card"><h3>Walls</h3><p>If César tries to open a project it was not invited to, GitHub returns an error. This has been tested.</p></div>
+        <div class="fact agreement-card"><h3>Agreements</h3><p>César does not use email, grocery, or payment tools, even though it shares a computer with the other agents.</p></div>
+        <p class="identity"><strong>Having an account does not mean being able to use it.</strong> César has an email address to register its GitHub account, but no tools to read or send email.</p>
+        <div class="fact"><h3>Review without reading code</h3><p>The result is checked by what it does and whether the automated checks pass — not by reading every changed line.</p></div>
       </div>
     </section>
 
     <section class="piece gringotts" aria-labelledby="gringotts-title">
       <div>
-        <div class="number">04 · programa</div>
+        <div class="number">04 · program</div>
         <h2 id="gringotts-title">Gringotts</h2>
-        <p class="lead">Parece otro agente desde Telegram, pero no piensa: ante el mismo pedido hace siempre lo mismo.</p>
+        <p class="lead">It looks like another agent in Telegram, but it does not think. The same request always gets the same result.</p>
       </div>
       <div class="facts">
-        <div class="fact"><h3>De qué se encarga</h3><p>Consulta información, prepara confirmaciones y ejecuta pagos que una persona confirmó.</p></div>
-        <div class="fact"><h3>Cómo le hablo</h3><p>Directamente por su bot de Telegram. Alfredo llega por otra entrada, mucho más limitada.</p></div>
-        <div class="fact"><h3>Qué puede hacer</h3><p>Mostrar información de una operación, validar una propuesta, crear una confirmación pendiente y ejecutar solo después de mi confirmación directa.</p></div>
-        <div class="fact wall-card"><h3>Paredes</h3><p>La entrada de Alfredo solo permite leer y proponer. No existen ahí las funciones para confirmar, ejecutar, cancelar ni leer la confirmación pendiente.</p></div>
-        <div class="fact agreement-card"><h3>Acuerdos</h3><p>Ningún acuerdo crítico protege el dinero. Los controles importantes funcionan aunque un agente no obedezca.</p></div>
+        <div class="fact"><h3>Its job</h3><p>Show payment information, prepare confirmations, and run payments that a person approved.</p></div>
+        <div class="fact"><h3>How to reach it</h3><p>Directly through its Telegram bot. Alfredo uses a separate, much more limited entrance.</p></div>
+        <div class="fact"><h3>What it can do</h3><p>Show the status of a payment, check a suggestion, create a pending confirmation, and run it only after a person confirms directly.</p></div>
+        <div class="fact wall-card"><h3>Walls</h3><p>Alfredo's entrance only supports reading and suggesting. It has no option to confirm, run, cancel, or even view the pending confirmation.</p></div>
+        <div class="fact agreement-card"><h3>Agreements</h3><p>No important money control depends on an agreement. The checks still work even if an agent does not follow instructions.</p></div>
       </div>
     </section>
 
-    <section aria-labelledby="pago-title">
-      <h2 id="pago-title">Una propuesta no es un pago</h2>
+    <section aria-labelledby="payment-title">
+      <h2 id="payment-title">A suggestion is not a payment</h2>
       <p class="lead">
-        Alfredo puede preparar el comienzo. La plata solo se mueve después de que yo confirmo
-        en mi conversación directa con Gringotts.
+        Alfredo can get things started. Money only moves after a person confirms directly
+        in the Gringotts chat.
       </p>
-      <div class="diagram small" role="img" aria-label="Alfredo propone un pago, Gringotts aplica controles, y solo Pablo puede confirmar para que se ejecute.">
+      <div class="diagram small" role="img" aria-label="Alfredo suggests a payment, Gringotts runs its checks, and only a person can confirm before it runs.">
         <svg viewBox="0 0 1000 310" aria-hidden="true">
           <defs>
             <marker id="arrow-payment" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
@@ -249,61 +248,55 @@
             </marker>
           </defs>
           <rect x="20" y="105" width="150" height="82" rx="14" fill="#dfeedd" class="box"></rect>
-          <text x="95" y="139" text-anchor="middle" class="label">Alfredo</text><text x="95" y="163" text-anchor="middle" class="tiny">propone</text>
+          <text x="95" y="139" text-anchor="middle" class="label">Alfredo</text><text x="95" y="163" text-anchor="middle" class="tiny">suggests</text>
           <rect x="235" y="76" width="200" height="140" rx="14" fill="#fff" class="box"></rect>
-          <text x="335" y="107" text-anchor="middle" class="label">controles</text>
-          <text x="335" y="133" text-anchor="middle" class="tiny">encendido · libre</text>
-          <text x="335" y="157" text-anchor="middle" class="tiny">destinatario aprobado</text>
-          <text x="335" y="181" text-anchor="middle" class="tiny">límites vigentes</text>
+          <text x="335" y="107" text-anchor="middle" class="label">checks</text>
+          <text x="335" y="133" text-anchor="middle" class="tiny">system on · no open payment</text>
+          <text x="335" y="157" text-anchor="middle" class="tiny">approved recipient</text>
+          <text x="335" y="181" text-anchor="middle" class="tiny">within the limits</text>
           <rect x="500" y="105" width="190" height="82" rx="14" fill="#eadff2" class="box"></rect>
-          <text x="595" y="137" text-anchor="middle" class="label">pendiente</text><text x="595" y="162" text-anchor="middle" class="tiny">“propuso Alfredo”</text>
+          <text x="595" y="137" text-anchor="middle" class="label">pending</text><text x="595" y="162" text-anchor="middle" class="tiny">“suggested by Alfredo”</text>
           <rect x="520" y="235" width="150" height="62" rx="14" fill="#fff" class="box"></rect>
-          <text x="595" y="272" text-anchor="middle" class="label">Pablo confirma</text>
+          <text x="595" y="272" text-anchor="middle" class="label">Person confirms</text>
           <rect x="770" y="105" width="200" height="82" rx="14" fill="#eadff2" class="box"></rect>
-          <text x="870" y="139" text-anchor="middle" class="label">Gringotts</text><text x="870" y="163" text-anchor="middle" class="tiny">ejecuta</text>
+          <text x="870" y="139" text-anchor="middle" class="label">Gringotts</text><text x="870" y="163" text-anchor="middle" class="tiny">runs it</text>
           <path d="M170 146 L235 146" stroke="#20201e" stroke-width="2" fill="none" marker-end="url(#arrow-payment)"></path>
           <path d="M435 146 L500 146" stroke="#20201e" stroke-width="2" fill="none" marker-end="url(#arrow-payment)"></path>
           <path d="M595 235 L595 188" stroke="#d96852" stroke-width="4" fill="none" marker-end="url(#arrow-payment)"></path>
           <path d="M690 146 L770 146" stroke="#20201e" stroke-width="2" fill="none" marker-end="url(#arrow-payment)"></path>
           <line x1="720" y1="55" x2="720" y2="225" class="wall hand"></line>
-          <text x="735" y="78" class="tiny" fill="#d96852">solo una persona</text>
+          <text x="735" y="78" class="tiny" fill="#d96852">a person must approve</text>
         </svg>
       </div>
       <p>
-        Si ya hay una confirmación abierta, la nueva propuesta se rechaza: no reemplaza ni
-        hace cola. Y la respuesta que vuelve a Alfredo omite a propósito cualquier dato que
-        pudiera servirle para aprobarla. La única pieza que toca dinero real es, justamente,
-        la que no improvisa.
+        If a confirmation is already open, a new suggestion is rejected. It does not replace
+        the first one or wait in line. The reply sent back to Alfredo also leaves out anything
+        that could help approve it. The only tool that touches real money is the one that
+        cannot improvise.
       </p>
     </section>
 
-    <section aria-labelledby="limites-title">
-      <h2 id="limites-title">Dónde están las paredes de verdad</h2>
+    <section aria-labelledby="limits-title">
+      <h2 id="limits-title">Where the real walls are</h2>
       <p class="lead">
-        Separar nombres y chats ordena el trabajo. Pero una separación real existe recién
-        cuando otro sistema rechaza la acción o directamente no ofrece esa función.
+        Separate names and chats keep things tidy. A real boundary exists only when another
+        system rejects the action or never offers it in the first place.
       </p>
       <div class="safety-grid">
-        <article><h3>Tres vecinos, una misma casa</h3><p>Alfredo, Changuito y César comparten máquina y usuario. Sus límites internos son acuerdos sostenidos por configuración.</p></article>
-        <article><h3>Una instrucción no quita poder</h3><p>Escribir “no lo hagas” puede orientar a un agente, pero no elimina una capacidad que sigue disponible.</p></article>
-        <article><h3>La red marca la pared</h3><p>Gringotts vive separado. Desde la Mac solo existen las entradas estrechas que ofrece: leer y proponer.</p></article>
-        <article><h3>La última puerta es humana</h3><p>Alfredo propone. Yo confirmo. No hay una segunda ruta para ejecutar el pago.</p></article>
+        <article><h3>Three roommates, one house</h3><p>Alfredo, Changuito, and César share a computer and the same login. The limits between them are rules set in the system's settings.</p></article>
+        <article><h3>A written rule does not remove access</h3><p>Telling an agent “do not do this” can guide its behavior, but it does not remove a tool that is still available.</p></article>
+        <article><h3>The network is the real wall</h3><p>Gringotts runs somewhere else. The shared Mac only gets the two small entrances it offers: read and suggest.</p></article>
+        <article><h3>A person opens the last door</h3><p>Alfredo suggests. A person confirms. There is no second way to run the payment.</p></article>
       </div>
     </section>
 
     <section>
       <p class="closing">
-        No busqué que cada pieza pudiera resolver cualquier cosa. Busqué responsabilidades
-        claras, límites visibles y paredes reales justo donde un error costaría más.
+        The goal is not to make every tool capable of everything. Each one gets a clear job,
+        visible limits, and real walls where a mistake would matter most.
       </p>
     </section>
   </main>
 
-  <footer>
-    <p>
-      Este explicador fue escrito por <strong>César</strong>, uno de los agentes que describe,
-      bajo las decisiones editoriales de Pablo.
-    </p>
-  </footer>
 </body>
 </html>
