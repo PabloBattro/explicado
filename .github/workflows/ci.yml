@@ -1,0 +1,20 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+# Sin permisos de escritura: el CI solo verifica, no toca el repo.
+permissions:
+  contents: read
+
+jobs:
+  verificar:
+    name: verificar
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verificar las paginas
+        run: python3 scripts/verificar.py
