@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Un agente de ventas para Tabares — Explained</title>
+  <title>Un agente de ventas para Tabaré — Explained</title>
   <style>
     :root {
       color-scheme: light;
@@ -84,6 +84,62 @@
     .decision-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 2rem; }
     .decision { border: 1.5px solid var(--ink); border-radius: 12px; padding: 1.15rem; background: var(--card); }
     .decision p { margin: 0; color: #504b43; }
+    .architecture {
+      display: grid;
+      grid-template-columns: minmax(11rem, .8fr) minmax(15rem, 1.2fr) minmax(13rem, 1fr);
+      gap: 2.5rem;
+      align-items: center;
+      margin-top: 2.8rem;
+      padding: 2rem;
+      border: 1.5px solid var(--ink);
+      border-radius: 18px 12px 20px 14px;
+      background: #f1ede3;
+      overflow-x: auto;
+    }
+    .arch-column { display: grid; gap: 1rem; min-width: 0; }
+    .arch-box {
+      position: relative;
+      border: 1.5px solid var(--ink);
+      border-radius: 12px;
+      background: var(--card);
+      padding: 1rem;
+      min-height: 5.6rem;
+    }
+    .arch-box b { display: block; margin-bottom: .25rem; }
+    .arch-box span { display: block; color: #504b43; font-size: .86rem; line-height: 1.35; }
+    .arch-box.to-center::after,
+    .arch-column.center .arch-box.connect::after {
+      content: "→";
+      position: absolute;
+      right: -2rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--ink);
+      font-size: 1.4rem;
+      font-weight: 900;
+    }
+    .arch-box.return::after { content: "⇄"; }
+    .arch-box.to-next::after {
+      content: "↓";
+      position: absolute;
+      left: 50%;
+      bottom: -1.6rem;
+      transform: translateX(-50%);
+      color: var(--ink);
+      font-size: 1.4rem;
+      font-weight: 900;
+    }
+    .arch-box.agent { background: var(--green-soft); border-width: 2px; box-shadow: 4px 4px 0 var(--green); }
+    .arch-box.state { background: var(--blue-soft); }
+    .arch-box.manual { background: var(--orange-soft); }
+    .arch-box.open { border-style: dashed; }
+    .arch-box small { display: inline-block; margin-top: .45rem; color: #765126; font-weight: 850; text-transform: uppercase; letter-spacing: .06em; }
+    .feed { display: grid; grid-template-columns: 1fr auto 1fr; gap: .55rem; align-items: center; }
+    .feed .arch-box { min-height: 0; }
+    .feed-arrow { font-weight: 900; }
+    .open-decisions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .8rem; margin-top: 2rem; padding: 0; list-style: none; counter-reset: open; }
+    .open-decisions li { counter-increment: open; border-left: 4px solid var(--orange); background: var(--card); padding: .9rem 1rem; }
+    .open-decisions li::before { content: counter(open, decimal-leading-zero) " · "; font-weight: 900; color: var(--orange); }
     .question-groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem; margin-top: 2.5rem; }
     .questions { border-top: 5px solid var(--orange); background: var(--card); padding: 1.4rem; }
     .questions:nth-child(even) { border-color: var(--green); }
@@ -98,7 +154,11 @@
       .flow::after { content: "Deslizá para ver el recorrido completo →"; position: sticky; left: .75rem; align-self: end; width: 15rem; color: var(--muted); font-size: .8rem; }
       .handover { grid-template-columns: 1fr; }
       .handover-mark { transform: rotate(90deg); justify-self: center; }
-      .decision-grid, .question-groups { grid-template-columns: 1fr; }
+      .decision-grid, .question-groups, .open-decisions { grid-template-columns: 1fr; }
+      .architecture { grid-template-columns: 1fr; gap: 2rem; padding: 1rem; overflow: visible; }
+      .arch-box.to-center::after,
+      .arch-column.center .arch-box.connect::after { content: "↓"; right: 50%; top: auto; bottom: -1.75rem; transform: translateX(50%); }
+      .arch-box.return::after { content: "↕"; }
     }
   </style>
 </head>
@@ -107,7 +167,7 @@
   <main>
     <header>
       <div class="eyebrow">Primer borrador para conversar</div>
-      <h1>Un agente de ventas para Tabares</h1>
+      <h1>Un agente de ventas para Tabaré</h1>
       <p class="dek">
         Una propuesta para atender consultas por WhatsApp, ayudar a elegir productos y llevar
         cada pedido hasta una confirmación clara, sin dejar a Manuel afuera de las decisiones sensibles.
@@ -132,7 +192,7 @@
       <h2 id="flow-title">El recorrido propuesto</h2>
       <p class="lead">El agente acompaña la conversación. El cliente confirma. Manuel entra cuando hace falta criterio humano.</p>
       <div class="flow" role="img" aria-label="El cliente escribe por WhatsApp, el agente lo conoce y califica, consulta productos y stock, arma el pedido, envía un presupuesto por correo, espera una confirmación clara y crea el pedido en Asana.">
-        <div class="step"><span class="step-num">01</span><b>Mensaje</b><span>Una persona escribe al WhatsApp de Tabares.</span></div>
+        <div class="step"><span class="step-num">01</span><b>Mensaje</b><span>Una persona escribe al WhatsApp de Tabaré.</span></div>
         <div class="step"><span class="step-num">02</span><b>Conocer</b><span>El agente pregunta lo necesario y distingue mayorista de minorista.</span></div>
         <div class="step"><span class="step-num">03</span><b>Ayudar</b><span>Responde con catálogo, precios, fotos, detalles y stock disponible.</span></div>
         <div class="step"><span class="step-num">04</span><b>Armar</b><span>Propone productos y cantidades hasta acordar un pedido.</span></div>
@@ -167,6 +227,67 @@
           </ul>
         </div>
       </div>
+    </section>
+
+    <section aria-labelledby="architecture-title">
+      <h2 id="architecture-title">Las piezas del sistema</h2>
+      <p class="lead">
+        Ya se puede dibujar el esqueleto sin elegir todavía proveedores ni tecnología.
+        El agente coordina la conversación; las fuentes conservan sus propios trabajos.
+      </p>
+      <div class="architecture" role="img" aria-label="Clientes y Manuel se conectan con el agente a través de WhatsApp Business y una interfaz de supervisión. El agente mantiene el estado de la conversación y consulta Supabase, el e-commerce, una base de conocimiento, el correo y Asana. Excel alimenta Supabase.">
+        <div class="arch-column left">
+          <div class="arch-box to-next">
+            <b>Cliente</b>
+            <span>Pregunta, elige productos y confirma.</span>
+          </div>
+          <div class="arch-box open to-center">
+            <b>WhatsApp Business</b>
+            <span>Entrada y salida de la conversación.</span>
+            <small>Proveedor por decidir</small>
+          </div>
+          <div class="arch-box manual return to-center">
+            <b>Manuel</b>
+            <span>Recibe alertas, toma casos y devuelve el control.</span>
+            <small>Interfaz por decidir</small>
+          </div>
+        </div>
+
+        <div class="arch-column center">
+          <div class="arch-box agent connect">
+            <b>Agente de ventas</b>
+            <span>Entiende el mensaje, consulta información, propone el siguiente paso y coordina el recorrido.</span>
+            <small>Dónde corre: por decidir</small>
+          </div>
+          <div class="arch-box state connect">
+            <b>Conversación y pedido</b>
+            <span>Un registro central une WhatsApp, mail, intervención humana y estado del pedido.</span>
+          </div>
+        </div>
+
+        <div class="arch-column right">
+          <div class="feed">
+            <div class="arch-box"><b>Excel</b><span>Actualización actual</span></div>
+            <div class="feed-arrow">→</div>
+            <div class="arch-box"><b>Supabase</b><span>Catálogo, precios y stock</span></div>
+          </div>
+          <div class="arch-box"><b>E-commerce</b><span>Fotos, descripciones y links de producto.</span></div>
+          <div class="arch-box"><b>Base de conocimiento</b><span>Empresa, políticas, envíos, pagos y respuestas estables.</span></div>
+          <div class="arch-box"><b>Correo</b><span>Envía el presupuesto y recibe la confirmación.</span></div>
+          <div class="arch-box"><b>Asana</b><span>Recibe el pedido después de la confirmación.</span></div>
+        </div>
+      </div>
+
+      <h3 style="margin-top: 2.5rem;">Decisiones que el diagrama deja abiertas</h3>
+      <ol class="open-decisions">
+        <li>¿Dónde corre el agente?</li>
+        <li>¿WhatsApp se conecta directo con Meta o mediante un proveedor?</li>
+        <li>¿Manuel trabaja desde un panel o desde su WhatsApp?</li>
+        <li>¿Cómo se vincula cada respuesta de mail con la conversación correcta?</li>
+        <li>¿El agente consulta datos del e-commerce o solamente comparte sus links?</li>
+        <li>¿Cómo pasa hoy la información de Excel a Supabase?</li>
+        <li>¿Quién mantiene y aprueba la base de conocimiento?</li>
+      </ol>
     </section>
 
     <section aria-labelledby="known-title">
