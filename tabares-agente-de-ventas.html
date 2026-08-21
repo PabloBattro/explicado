@@ -84,6 +84,17 @@
     .decision-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 2rem; }
     .decision { border: 1.5px solid var(--ink); border-radius: 12px; padding: 1.15rem; background: var(--card); }
     .decision p { margin: 0; color: #504b43; }
+    .access-note { border: 2px solid var(--orange); border-radius: 14px; padding: 1rem 1.2rem; background: var(--orange-soft); margin: 2rem 0; }
+    .access-note p { margin: 0; font-weight: 750; }
+    .access-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 2rem; }
+    .access-card { border: 1.5px solid var(--ink); border-radius: 12px; padding: 1.15rem; background: var(--card); }
+    .access-card.required { box-shadow: 4px 4px 0 var(--green); }
+    .access-card.optional { border-style: dashed; }
+    .access-card p { margin: 0; color: #504b43; }
+    .access-card .kind { display: block; margin-bottom: .5rem; color: var(--muted); font-size: .72rem; font-weight: 900; letter-spacing: .09em; text-transform: uppercase; }
+    .access-questions { margin-top: 2rem; padding: 1.3rem 1.4rem; background: var(--blue-soft); border-radius: 14px; }
+    .access-questions ol { margin-bottom: 0; padding-left: 1.3rem; }
+    .access-questions li + li { margin-top: .65rem; }
     .architecture {
       display: grid;
       grid-template-columns: minmax(11rem, .8fr) minmax(15rem, 1.2fr) minmax(13rem, 1fr);
@@ -154,7 +165,7 @@
       .flow::after { content: "Deslizá para ver el recorrido completo →"; position: sticky; left: .75rem; align-self: end; width: 15rem; color: var(--muted); font-size: .8rem; }
       .handover { grid-template-columns: 1fr; }
       .handover-mark { transform: rotate(90deg); justify-self: center; }
-      .decision-grid, .question-groups, .open-decisions { grid-template-columns: 1fr; }
+      .decision-grid, .access-grid, .question-groups, .open-decisions { grid-template-columns: 1fr; }
       .architecture { grid-template-columns: 1fr; gap: 2rem; padding: 1rem; overflow: visible; }
       .arch-box.to-center::after,
       .arch-column.center .arch-box.connect::after { content: "↓"; right: 50%; top: auto; bottom: -1.75rem; transform: translateX(50%); }
@@ -302,10 +313,81 @@
       </div>
     </section>
 
+    <section aria-labelledby="access-title">
+      <h2 id="access-title">Qué accesos necesitamos preparar</h2>
+      <p class="lead">
+        No hacen falta contraseñas personales ni acceso total a cada sistema. Manuel autoriza
+        conexiones puntuales cuando el alcance esté definido.
+      </p>
+      <div class="access-note">
+        <p>Las claves y autorizaciones no se mandan por WhatsApp, mail ni documentos públicos. Se configuran más adelante en un entorno seguro.</p>
+      </div>
+      <div class="access-grid">
+        <div class="access-card required">
+          <span class="kind">Necesario</span>
+          <h3>Supabase</h3>
+          <p>Lectura limitada de catálogo, precios y stock. No acceso total a la base.</p>
+        </div>
+        <div class="access-card required">
+          <span class="kind">Necesario</span>
+          <h3>WhatsApp Business</h3>
+          <p>Autorización del negocio y del número que atenderá el agente.</p>
+        </div>
+        <div class="access-card required">
+          <span class="kind">Necesario</span>
+          <h3>Correo</h3>
+          <p>Una casilla dedicada que pueda enviar presupuestos y recibir confirmaciones.</p>
+        </div>
+        <div class="access-card required">
+          <span class="kind">Necesario</span>
+          <h3>Asana</h3>
+          <p>Permiso para crear y modificar tareas solamente en el proyecto de pedidos.</p>
+        </div>
+        <div class="access-card required">
+          <span class="kind">Necesario</span>
+          <h3>Proveedor de IA</h3>
+          <p>Una cuenta de proyecto con presupuesto propio para operar el agente.</p>
+        </div>
+        <div class="access-card optional">
+          <span class="kind">Solo si hace falta</span>
+          <h3>Tiendanube</h3>
+          <p>Lectura de productos y variantes si el agente consulta la tienda; nada si solo comparte links públicos.</p>
+        </div>
+        <div class="access-card optional">
+          <span class="kind">Solo si hace falta</span>
+          <h3>Vercel</h3>
+          <p>Acceso limitado al proyecto únicamente si el agente corre ahí o necesita administrar el e-commerce.</p>
+        </div>
+        <div class="access-card optional">
+          <span class="kind">Solo si hace falta</span>
+          <h3>Excel</h3>
+          <p>No se necesita acceso si la actualización hacia Supabase ya funciona y queda fuera del MVP.</p>
+        </div>
+      </div>
+      <div class="access-questions">
+        <h3>Antes de preparar los accesos</h3>
+        <ol>
+          <li>¿El número actual ya está dentro de WhatsApp Business de Meta?</li>
+          <li>¿El e-commerce usa Tiendanube, Vercel o una combinación de ambos?</li>
+          <li>¿Qué casilla enviará los presupuestos?</li>
+          <li>¿En qué proyecto y sección de Asana deben aparecer los pedidos?</li>
+        </ol>
+      </div>
+    </section>
+
     <section aria-labelledby="questions-title">
       <h2 id="questions-title">Lo que necesitamos preguntarle a Manuel</h2>
       <p class="lead">Estas respuestas cierran el funcionamiento del negocio antes de decidir cómo construirlo.</p>
       <div class="question-groups">
+        <div class="questions">
+          <h3>El punto de partida</h3>
+          <ol>
+            <li>¿Cuántos chats con potenciales clientes reciben por semana?</li>
+            <li>¿Cuántos terminan en presupuesto o venta?</li>
+            <li>¿Cuánto tiempo por semana dedica Manuel a responder y hacer seguimiento?</li>
+            <li>¿Cada cuánto se actualizan catálogo, precios y stock?</li>
+          </ol>
+        </div>
         <div class="questions">
           <h3>Venta y precios</h3>
           <ol>
