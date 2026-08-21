@@ -1,0 +1,237 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Un agente de ventas para Tabares — Explained</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #23211d;
+      --muted: #68635a;
+      --paper: #fbf8f0;
+      --card: #fffdf8;
+      --green: #51735a;
+      --green-soft: #dce9dc;
+      --orange: #d97943;
+      --orange-soft: #f8dec7;
+      --yellow: #f2c85b;
+      --blue-soft: #dceaf3;
+      --line: #d8d0c2;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      background: var(--paper);
+      color: var(--ink);
+      font-family: ui-rounded, "SF Pro Rounded", system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+    }
+    main, footer, .topbar { width: min(100% - 2rem, 68rem); margin-inline: auto; }
+    .topbar { padding-top: 1.2rem; }
+    .topbar a { color: var(--muted); font-weight: 750; text-decoration: none; }
+    .topbar a:hover { color: var(--ink); }
+    header { padding: clamp(4rem, 10vw, 8rem) 0 4rem; max-width: 55rem; }
+    .eyebrow { font-size: .78rem; font-weight: 850; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { font-size: clamp(3rem, 8vw, 6.5rem); line-height: .94; letter-spacing: -.065em; margin: .7rem 0 1.8rem; }
+    .dek { font-size: clamp(1.2rem, 2.5vw, 1.6rem); line-height: 1.45; max-width: 48rem; color: #45413a; }
+    .status { display: inline-block; margin-top: 1rem; padding: .35rem .8rem; border: 1.5px solid var(--ink); border-radius: 999px; background: var(--yellow); font-size: .82rem; font-weight: 850; }
+    section { padding: clamp(4rem, 9vw, 7rem) 0; border-top: 1.5px solid var(--line); }
+    h2 { font-size: clamp(2.2rem, 5vw, 4rem); line-height: 1; letter-spacing: -.05em; margin: 0 0 1.2rem; }
+    h3 { font-size: 1.08rem; margin: 0 0 .45rem; }
+    p { max-width: 46rem; }
+    .lead { font-size: 1.2rem; color: #45413a; }
+    .promise { border-left: 4px solid var(--green); padding: .3rem 0 .3rem 1.2rem; margin: 2rem 0 0; font-size: 1.15rem; font-weight: 700; }
+    .flow {
+      display: grid;
+      grid-template-columns: repeat(7, minmax(8.5rem, 1fr));
+      gap: 2.2rem;
+      margin-top: 2.8rem;
+      overflow-x: auto;
+      padding: .4rem .2rem 1.4rem;
+      -webkit-overflow-scrolling: touch;
+    }
+    .step {
+      position: relative;
+      min-height: 10rem;
+      border: 1.5px solid var(--ink);
+      border-radius: 16px 11px 18px 12px;
+      background: var(--card);
+      box-shadow: 4px 4px 0 var(--ink);
+      padding: 1rem;
+    }
+    .step::after { content: "→"; position: absolute; right: -1.75rem; top: 3.7rem; font-size: 1.6rem; font-weight: 900; }
+    .step:last-child::after { content: ""; }
+    .step:nth-child(2), .step:nth-child(3) { background: var(--blue-soft); }
+    .step:nth-child(4), .step:nth-child(5) { background: var(--orange-soft); }
+    .step:nth-child(6), .step:nth-child(7) { background: var(--green-soft); }
+    .step b { display: block; margin-bottom: .35rem; }
+    .step span { color: #504b43; font-size: .92rem; line-height: 1.4; }
+    .step-num { font-size: .72rem; font-weight: 900; letter-spacing: .1em; color: var(--muted); }
+    .handover {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto minmax(0, 1fr);
+      align-items: stretch;
+      gap: 1rem;
+      margin-top: 2.5rem;
+    }
+    .role { border: 1.5px solid var(--ink); border-radius: 14px; padding: 1.4rem; background: var(--card); }
+    .role.agent { box-shadow: 4px 4px 0 var(--green); }
+    .role.manuel { box-shadow: 4px 4px 0 var(--orange); }
+    .role ul { padding-left: 1.2rem; margin-bottom: 0; }
+    .handover-mark { align-self: center; font-size: 1.8rem; font-weight: 900; color: var(--orange); }
+    .decision-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 2rem; }
+    .decision { border: 1.5px solid var(--ink); border-radius: 12px; padding: 1.15rem; background: var(--card); }
+    .decision p { margin: 0; color: #504b43; }
+    .question-groups { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.2rem; margin-top: 2.5rem; }
+    .questions { border-top: 5px solid var(--orange); background: var(--card); padding: 1.4rem; }
+    .questions:nth-child(even) { border-color: var(--green); }
+    .questions ol { margin: .8rem 0 0; padding-left: 1.35rem; }
+    .questions li + li { margin-top: .8rem; }
+    .test { padding: 1.5rem; border: 2px dashed var(--green); border-radius: 14px; background: var(--green-soft); margin-top: 2rem; }
+    .test p { margin: 0; }
+    footer { padding: 2.5rem 0 4rem; color: var(--muted); font-size: .9rem; }
+    @media (max-width: 720px) {
+      main, footer, .topbar { width: min(100% - 1.5rem, 68rem); }
+      .flow { margin-inline: -.75rem; padding-left: .75rem; }
+      .flow::after { content: "Deslizá para ver el recorrido completo →"; position: sticky; left: .75rem; align-self: end; width: 15rem; color: var(--muted); font-size: .8rem; }
+      .handover { grid-template-columns: 1fr; }
+      .handover-mark { transform: rotate(90deg); justify-self: center; }
+      .decision-grid, .question-groups { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <nav class="topbar"><a href="index.html">← Explained</a></nav>
+  <main>
+    <header>
+      <div class="eyebrow">Primer borrador para conversar</div>
+      <h1>Un agente de ventas para Tabares</h1>
+      <p class="dek">
+        Una propuesta para atender consultas por WhatsApp, ayudar a elegir productos y llevar
+        cada pedido hasta una confirmación clara, sin dejar a Manuel afuera de las decisiones sensibles.
+      </p>
+      <span class="status">Propuesta abierta · falta validar con Manuel</span>
+    </header>
+
+    <section aria-labelledby="goal-title">
+      <h2 id="goal-title">Qué problema resolvería</h2>
+      <p class="lead">
+        Hoy puede escribir un mayorista conocido, un comercio nuevo o alguien que quiere un solo mate.
+        La idea es que todos reciban una respuesta rápida y que la conversación avance hacia una venta,
+        sin prometer productos que no están disponibles ni perder el contexto cuando interviene una persona.
+      </p>
+      <p class="promise">
+        El primer alcance es deliberadamente chico: conversaciones de texto, catálogo, precios, stock,
+        presupuesto por mail y pedido confirmado en Asana.
+      </p>
+    </section>
+
+    <section aria-labelledby="flow-title">
+      <h2 id="flow-title">El recorrido propuesto</h2>
+      <p class="lead">El agente acompaña la conversación. El cliente confirma. Manuel entra cuando hace falta criterio humano.</p>
+      <div class="flow" role="img" aria-label="El cliente escribe por WhatsApp, el agente lo conoce y califica, consulta productos y stock, arma el pedido, envía un presupuesto por correo, espera una confirmación clara y crea el pedido en Asana.">
+        <div class="step"><span class="step-num">01</span><b>Mensaje</b><span>Una persona escribe al WhatsApp de Tabares.</span></div>
+        <div class="step"><span class="step-num">02</span><b>Conocer</b><span>El agente pregunta lo necesario y distingue mayorista de minorista.</span></div>
+        <div class="step"><span class="step-num">03</span><b>Ayudar</b><span>Responde con catálogo, precios, fotos, detalles y stock disponible.</span></div>
+        <div class="step"><span class="step-num">04</span><b>Armar</b><span>Propone productos y cantidades hasta acordar un pedido.</span></div>
+        <div class="step"><span class="step-num">05</span><b>Presupuestar</b><span>Pide nombre y mail, y envía el presupuesto por correo.</span></div>
+        <div class="step"><span class="step-num">06</span><b>Confirmar</b><span>Espera una señal clara: “confirmo”, “dale” o “vamos adelante”.</span></div>
+        <div class="step"><span class="step-num">07</span><b>Entregar</b><span>Crea automáticamente el pedido confirmado en Asana.</span></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="roles-title">
+      <h2 id="roles-title">El agente acompaña. Manuel conserva el control.</h2>
+      <p class="lead">No todo caso necesita una persona, pero siempre tiene que existir una salida clara hacia Manuel y una forma de devolver la conversación.</p>
+      <div class="handover">
+        <div class="role agent">
+          <h3>El agente</h3>
+          <ul>
+            <li>Atiende y califica a quien escribe.</li>
+            <li>Consulta el e-commerce y la base de stock.</li>
+            <li>Recomienda y busca cerrar el pedido.</li>
+            <li>Genera el presupuesto y reconoce una confirmación clara.</li>
+            <li>Crea el pedido confirmado en Asana.</li>
+          </ul>
+        </div>
+        <div class="handover-mark" aria-hidden="true">⇄</div>
+        <div class="role manuel">
+          <h3>Manuel</h3>
+          <ul>
+            <li>Recibe los casos que necesitan criterio o una excepción.</li>
+            <li>Toma la conversación sin competir con el agente.</li>
+            <li>Modifica manualmente pedidos que cambian por mail.</li>
+            <li>Devuelve el control cuando el caso queda resuelto.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="known-title">
+      <h2 id="known-title">Lo que ya está acordado</h2>
+      <div class="decision-grid">
+        <div class="decision"><h3>Entra cualquier cliente</h3><p>El agente no parte de una lista cerrada: pregunta y califica durante la charla.</p></div>
+        <div class="decision"><h3>El stock se puede prometer</h3><p>La disponibilidad que figura en la base es la referencia para vender.</p></div>
+        <div class="decision"><h3>El e-commerce sirve de apoyo</h3><p>Fotos, descripciones y páginas de producto se pueden compartir durante la conversación.</p></div>
+        <div class="decision"><h3>El cliente confirma por mail</h3><p>No alcanza el silencio: hace falta una respuesta que indique claramente que quiere avanzar.</p></div>
+        <div class="decision"><h3>Los cambios por mail son manuales</h3><p>En el primer alcance, Manuel se ocupa de modificar un presupuesto ya enviado.</p></div>
+        <div class="decision"><h3>Solo se guardan datos necesarios</h3><p>Para este flujo se definieron nombre y mail. Otros datos necesitan una decisión aparte.</p></div>
+      </div>
+    </section>
+
+    <section aria-labelledby="questions-title">
+      <h2 id="questions-title">Lo que necesitamos preguntarle a Manuel</h2>
+      <p class="lead">Estas respuestas cierran el funcionamiento del negocio antes de decidir cómo construirlo.</p>
+      <div class="question-groups">
+        <div class="questions">
+          <h3>Venta y precios</h3>
+          <ol>
+            <li>¿Qué datos distinguen a un mayorista y qué cambia para un minorista?</li>
+            <li>¿Hay un mínimo de unidades o monto para comprar al por mayor?</li>
+            <li>¿Cuál es la tabla exacta de descuentos por volumen? ¿Se aplica por producto o por pedido?</li>
+            <li>¿La base ya trae el precio final o el agente debe calcular descuentos?</li>
+          </ol>
+        </div>
+        <div class="questions">
+          <h3>Stock y fuentes</h3>
+          <ol>
+            <li>¿Con qué demora se actualiza el stock y qué pasa si dos clientes piden la última unidad?</li>
+            <li>Si el e-commerce y la base muestran datos distintos, ¿cuál manda para precio, descripción y variantes?</li>
+          </ol>
+        </div>
+        <div class="questions">
+          <h3>Pedido y operación</h3>
+          <ol>
+            <li>¿Qué datos obligatorios debe incluir el presupuesto y qué necesita la tarea de Asana?</li>
+            <li>¿Cómo se acuerdan pago, factura, envío o retiro?</li>
+            <li>¿Qué respuesta recibe el cliente después de que el pedido entra en Asana?</li>
+          </ol>
+        </div>
+        <div class="questions">
+          <h3>Intervención de Manuel</h3>
+          <ol>
+            <li>¿Qué casos deben pasarle de inmediato?</li>
+            <li>¿Toma el control desde un panel o desde su propio WhatsApp?</li>
+            <li>¿Cómo se le avisa que hay una conversación esperando y cómo devuelve el control?</li>
+            <li>¿Qué se le dice al cliente cuando Manuel no está disponible?</li>
+          </ol>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="test-title">
+      <h2 id="test-title">Cómo sabremos si el primer alcance funciona</h2>
+      <p class="lead">Antes de medir ventas reales, hay una prueba simple de punta a punta.</p>
+      <div class="test">
+        <p>
+          Una persona del equipo se hace pasar por cliente, conversa por WhatsApp, elige productos,
+          recibe el presupuesto, confirma por mail y comprueba que el pedido correcto aparezca en Asana.
+        </p>
+      </div>
+    </section>
+  </main>
+  <footer>Este documento es una propuesta para validar. No describe todavía un sistema construido.</footer>
+</body>
+</html>
