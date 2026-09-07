@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Pizarra táctica — Fútbol 7</title>
+  <style>
+    :root { color-scheme:light; --ink:#171714; --muted:#6d6a62; --paper:#f1efe9; --board:#fffef8; --line:#c9c5ba; --us:#d72f35; --them:#191919; --move:#197448; --warn:#a9610a; }
+    * { box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { margin:0; background:var(--paper); color:var(--ink); font-family:Inter,ui-sans-serif,system-ui,-apple-system,sans-serif; line-height:1.45; }
+    .hero,.chapter-head,.closing { width:min(100% - 2rem,68rem); margin-inline:auto; }
+    .hero { min-height:72svh; display:grid; align-content:center; padding:4rem 0; }
+    .eyebrow { margin:0 0 .8rem; color:var(--muted); font-size:.74rem; font-weight:800; letter-spacing:.11em; text-transform:uppercase; }
+    h1 { max-width:11ch; margin:0; font-size:clamp(3.3rem,11vw,7.5rem); line-height:.86; letter-spacing:-.07em; }
+    .intro { max-width:39rem; margin:1.5rem 0 0; color:#48453f; font-size:clamp(1.05rem,2.2vw,1.3rem); }
+    .menu { display:flex; flex-wrap:wrap; gap:.55rem; margin-top:2rem; }
+    .menu a { padding:.65rem .9rem; border:1px solid var(--line); border-radius:999px; color:var(--ink); background:var(--board); font-size:.84rem; font-weight:750; text-decoration:none; }
+    .chapter { padding-top:5rem; }
+    .chapter-head { padding-bottom:4rem; border-top:1px solid var(--line); padding-top:5rem; }
+    .chapter-head h2 { max-width:12ch; margin:0; font-size:clamp(3rem,8vw,6rem); line-height:.9; letter-spacing:-.06em; }
+    .chapter-head p:last-child { max-width:38rem; color:#4d4a44; font-size:1.05rem; }
+    .story { width:min(100% - 1rem,70rem); margin:0 auto 7rem; display:grid; grid-template-columns:minmax(19rem,1fr) minmax(18rem,.76fr); gap:clamp(2rem,6vw,6rem); align-items:start; }
+    .board-wrap { position:sticky; top:max(.5rem,calc((100svh - min(77svh,42rem))/2)); height:min(77svh,42rem); display:grid; place-items:center; }
+    .board-shell { width:min(100%,34rem); height:100%; padding:.6rem; border:1px solid #d2cec4; border-radius:1rem; background:#e3e0d7; box-shadow:0 18px 50px rgb(30 28 24/10%); }
+    .pitch { position:relative; width:100%; height:100%; overflow:hidden; border:2px solid var(--line); border-radius:.65rem; background:var(--board); }
+    .pitch::before { content:""; position:absolute; z-index:0; top:50%; width:100%; border-top:2px solid var(--line); }
+    .pitch::after { content:""; position:absolute; z-index:0; top:50%; left:50%; width:min(25%,7rem); aspect-ratio:1; transform:translate(-50%,-50%); border:2px solid var(--line); border-radius:50%; }
+    .box { position:absolute; z-index:0; left:50%; width:46%; height:13%; transform:translateX(-50%); border:2px solid var(--line); }
+    .box.top { top:-2px; border-radius:0 0 .4rem .4rem; } .box.bottom { bottom:-2px; border-radius:.4rem .4rem 0 0; }
+    .goal { position:absolute; z-index:0; left:50%; width:25%; height:2%; transform:translateX(-50%); border:2px solid var(--line); background:var(--board); }
+    .goal.top { top:-2px; } .goal.bottom { bottom:-2px; }
+    .piece,.ball { position:absolute; z-index:3; left:var(--x); top:var(--y); transform:translate(-50%,-50%); transition:left .68s cubic-bezier(.2,.72,.28,1),top .68s cubic-bezier(.2,.72,.28,1),opacity .25s; }
+    .piece { display:grid; place-items:center; width:clamp(1.5rem,5vmin,2.25rem); aspect-ratio:1; border:2px solid rgb(255 255 255/90%); border-radius:50%; box-shadow:0 2px 5px rgb(0 0 0/28%); color:white; font-size:clamp(.58rem,1.8vmin,.82rem); font-weight:900; }
+    .piece.us { background:var(--us); } .piece.them { z-index:2; background:var(--them); }
+    .piece.role { width:auto; min-width:2.1rem; padding:0 .32rem; border-radius:999px; font-size:.53rem; letter-spacing:.01em; }
+    .ball { width:.75rem; aspect-ratio:1; border:2px solid var(--ink); border-radius:50%; background:white; }
+    .paths { position:absolute; z-index:1; inset:0; width:100%; height:100%; pointer-events:none; }
+    .path { opacity:0; fill:none; stroke:var(--move); stroke-width:1.35; stroke-dasharray:4 3; transition:opacity .3s; }
+    .path.visible { opacity:1; }
+    .status { position:absolute; z-index:5; top:.7rem; left:.7rem; max-width:72%; padding:.35rem .62rem; border:1px solid currentColor; border-radius:999px; background:rgb(255 254 248/92%); color:var(--muted); font-size:.67rem; font-weight:850; letter-spacing:.055em; text-transform:uppercase; }
+    .status.good { color:var(--move); } .status.warn { color:var(--warn); }
+    .legend { position:absolute; z-index:5; right:.6rem; bottom:.6rem; display:flex; gap:.55rem; padding:.32rem .45rem; border-radius:.35rem; background:rgb(255 254 248/88%); color:var(--muted); font-size:.61rem; }
+    .legend i { display:inline-block; width:.5rem; aspect-ratio:1; margin-right:.2rem; border-radius:50%; } .legend .red { background:var(--us); } .legend .black { background:var(--them); }
+    .steps { padding:23svh 0 30svh; }
+    .step { min-height:66svh; display:grid; align-content:center; opacity:.26; transition:opacity .25s; }
+    .step.active { opacity:1; }
+    .card { padding:1.25rem 1.35rem 1.4rem; border:1px solid #d5d1c7; border-radius:.8rem; background:rgb(255 254 248/96%); box-shadow:0 12px 35px rgb(38 34 28/7%); }
+    .index { display:block; margin-bottom:.6rem; color:var(--muted); font-size:.69rem; font-weight:850; letter-spacing:.075em; text-transform:uppercase; }
+    .step h3 { margin:0; font-size:clamp(1.55rem,4vw,2.55rem); line-height:1.03; letter-spacing:-.04em; }
+    .step p { margin:.75rem 0 0; color:#4f4c46; }
+    .rules { margin:.8rem 0 0; padding-left:1.1rem; color:#4f4c46; font-size:.94rem; }
+    .rules li+li { margin-top:.35rem; }
+    .closing { padding:4rem 0 8rem; border-top:1px solid var(--line); }
+    .closing h2 { max-width:14ch; margin:0; font-size:clamp(2.5rem,7vw,5rem); line-height:.95; letter-spacing:-.05em; }
+    @media(max-width:720px){
+      .hero { min-height:68svh; } .chapter { padding-top:2rem; } .chapter-head { padding-top:4rem; padding-bottom:2rem; }
+      .story { width:100%; display:block; margin-bottom:4rem; }
+      .board-wrap { z-index:10; top:0; height:61svh; padding:.4rem .4rem 0; pointer-events:none; }
+      .board-shell { width:min(100%,30rem); padding:.38rem; border-radius:.75rem; }
+      .steps { position:relative; z-index:11; padding:10svh .7rem 25svh; }
+      .step { min-height:65svh; align-content:end; } .card { width:min(100%,30rem); margin-inline:auto; padding:.95rem 1rem; }
+      .step p,.rules { font-size:.89rem; } .legend { display:none; }
+    }
+    @media(prefers-reduced-motion:reduce){ html{scroll-behavior:auto}.piece,.ball,.path,.step{transition:none} }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <p class="eyebrow">Pizarra · Fútbol 7</p>
+    <h1>Atacar y defender juntos</h1>
+    <p class="intro">Movimientos simples para que el equipo ocupe bien la cancha con pelota y siga compacto cuando presiona.</p>
+    <nav class="menu" aria-label="Casos de la pizarra">
+      <a href="#salida">Ataque · Salida</a><a href="#presion-rival">Ataque · Presión rival</a><a href="#recuperada">Ataque · Recuperación</a><a href="#defensa">Defensa · Presión alta</a>
+    </nav>
+  </header>
+
+  <main>
+    <section class="chapter" id="ataque">
+      <header class="chapter-head"><p class="eyebrow">Ataque</p><h2>Abrir, escalonar, avanzar.</h2><p>La forma cambia según dónde nace la jugada. La regla no: ancho, distintas alturas y opciones por delante y por detrás de la pelota.</p></header>
+
+      <section class="story" id="salida" data-story="salida" aria-label="Salida con el central">
+        <div class="board-wrap"><div class="board-shell"><div class="pitch"></div></div></div>
+        <div class="steps">
+          <article class="step active"><div class="card"><span class="index">Salida · Inicio</span><h3>El central recibe</h3><p>La pelota está abajo. El resto prepara la cancha antes de que llegue el pase.</p></div></article>
+          <article class="step"><div class="card"><span class="index">La forma</span><h3>Laterales bien abiertos</h3><p>El 3 y el 4 ocupan las bandas. El 5 se ofrece cerca; el 10, más lejos. No quedan en la misma línea.</p></div></article>
+          <article class="step"><div class="card"><span class="index">Opción corta y larga</span><h3>El 9 da profundidad</h3><p>Se mueve para ser opción de pase largo y poder pivotear. No baja hasta ocupar el lugar de los volantes.</p></div></article>
+          <article class="step"><div class="card"><span class="index">Variante</span><h3>Si todos se acercan, nos encerramos</h3><p>Laterales cerrados, volantes a la misma altura y el 9 demasiado bajo permiten que el rival tape todo junto.</p></div></article>
+        </div>
+      </section>
+
+      <section class="story" id="presion-rival" data-story="presionRival" aria-label="Salida cuando el rival presiona alto">
+        <div class="board-wrap"><div class="board-shell"><div class="pitch"></div></div></div>
+        <div class="steps">
+          <article class="step active"><div class="card"><span class="index">Presión rival · Inicio</span><h3>Presionan alto o baja un volante</h3><p>Son dos disparadores distintos para la misma respuesta: crear una salida lateral sin perder el lado contrario.</p></div></article>
+          <article class="step"><div class="card"><span class="index">Primer apoyo</span><h3>El 4 recibe de espalda</h3><p>Puede aguantar, descargar con el 10 o cruzar hacia el lateral contrario.</p></div></article>
+          <article class="step"><div class="card"><span class="index">Lejos de la pelota</span><h3>El 3 sigue abierto</h3><p>No se centraliza. Conserva una salida por el lado opuesto mientras el 5 baja y se abre para ayudar.</p></div></article>
+          <article class="step"><div class="card"><span class="index">Entre líneas</span><h3>El 10 ofrece el pase siguiente</h3><p>Busca recibir del volante retrasado o ser la descarga del 4. La secuencia funciona igual espejada por izquierda.</p></div></article>
+        </div>
+      </section>
+
+      <section class="story" id="recuperada" data-story="recuperada" aria-label="Ataque después de recuperar la pelota">
+        <div class="board-wrap"><div class="board-shell"><div class="pitch"></div></div></div>
+        <div class="steps">
+          <article class="step active"><div class="card"><span class="index">Pelota recuperada</span><h3>El 3 recupera y traslada</h3><p>Si tiene espacio, avanza con la pelota para fijar una marca antes de soltarla.</p></div></article>
+          <article class="step"><div class="card"><span class="index">Por delante</span><h3>El 10 ataca el centro</h3><p>Un volante ocupa la posición central ofensiva. El 9 sale de su posición y ataca el espacio: acá no busca pivotear.</p></div></article>
+          <article class="step"><div class="card"><span class="index">Equilibrio</span><h3>El 5 queda como descarga</h3><p>Da una opción al medio si el avance se cierra y permite sostener la jugada.</p></div></article>
+          <article class="step"><div class="card"><span class="index">Lado contrario</span><h3>El 4 sube fuerte</h3><p>Se proyecta para ser opción lejos de la recuperación. Todo se espeja si la pelota se gana por derecha.</p></div></article>
+        </div>
+      </section>
+    </section>
+
+    <section class="chapter" id="defensa">
+      <header class="chapter-head"><p class="eyebrow">Defensa · Presión alta</p><h2>Forzar el pase largo.</h2><p>La presión no termina cuando el rival juega largo. Termina cuando recuperamos la pelota.</p></header>
+      <section class="story" data-story="defensa" aria-label="Presión alta y segunda pelota">
+        <div class="board-wrap"><div class="board-shell"><div class="pitch"></div></div></div>
+        <div class="steps">
+          <article class="step active"><div class="card"><span class="index">Posición inicial</span><h3>Tres jugadores orientan la salida</h3><p>El 9 toma al central rival. El 10 y el 5 saltan sobre sus laterales para llevar al arquero al pase largo.</p></div></article>
+          <article class="step"><div class="card"><span class="index">Salida por derecha rival</span><h3>Uno presiona, el otro cierra</h3><p>El 10 aprieta al lateral que recibe. El 5 deja la banda contraria y protege el pase interior. Por izquierda, se espeja.</p></div></article>
+          <article class="step"><div class="card"><span class="index">Detrás de la presión</span><h3>La última línea achica</h3><p>El 3 y el 4 reducen la distancia con la primera presión; el 2 sigue con el 9 rival. Si un rival se suma arriba, un lateral se cierra con él.</p></div></article>
+          <article class="step"><div class="card"><span class="index">Si rompen la primera línea</span><h3>Volvemos por dentro</h3><p>No defendemos hombre a hombre. El volante contrario a la salida cierra el medio, el del lado de la pelota impide la proyección y los defensores temporizan juntos.</p></div></article>
+          <article class="step"><div class="card"><span class="index">Pelota larga</span><h3>El 2 disputa con el 9</h3><p>El central se queda con la referencia rival para el primer duelo. El resto ya se prepara para el rebote.</p></div></article>
+          <article class="step"><div class="card"><span class="index">La jugada decisiva</span><h3>Todos atacan la segunda pelota</h3><p>El 10 y el 8 cierran el rebote por delante o por el centro. El 3 y el 4 cubren la caída lateral y la profundidad hacia nuestro arco.</p><ul class="rules"><li>Si recuperamos, puede nacer una contra.</li><li>Si el rival gana el rebote, sigue siendo una jugada de peligro.</li><li>Si un lateral sale, el 2 cubre y el lateral opuesto se cierra.</li></ul></div></article>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <footer class="closing"><p class="eyebrow">La regla común</p><h2>Las distancias se defienden entre todos.</h2><p class="intro">Con pelota, damos amplitud y opciones. Sin pelota, achicamos juntos y seguimos la jugada hasta recuperar.</p></footer>
+
+  <script>
+    const U=(n,x,y)=>({side:"us",label:String(n),x,y});
+    const T=(n,x,y,role=false)=>({side:"them",label:String(n),x,y,role});
+    const commonOpp=[T(1,50,7),T(4,17,25),T(2,50,22),T(3,83,25),T(10,30,43),T(5,70,43),T(9,50,58)];
+    const scenarios={
+      salida:[
+        {label:"Central recibe",pieces:[U(1,50,94),U(2,50,78),U(3,19,70),U(4,81,70),U(5,38,57),U(10,65,48),U(9,50,22),...commonOpp],ball:[50,75],paths:[]},
+        {label:"Cancha abierta",tone:"good",pieces:[U(1,50,94),U(2,50,78),U(3,9,64),U(4,91,64),U(5,37,57),U(10,66,43),U(9,50,20),...commonOpp],ball:[50,75],paths:[[19,70,10,64],[81,70,90,64],[50,76,37,58],[50,76,65,44]]},
+        {label:"Pase largo y pivote",tone:"good",pieces:[U(1,50,94),U(2,50,78),U(3,9,64),U(4,91,64),U(5,37,57),U(10,66,43),U(9,59,18),...commonOpp],ball:[50,75],paths:[[50,75,58,20],[50,21,59,18]]},
+        {label:"Así no",tone:"warn",pieces:[U(1,50,94),U(2,50,78),U(3,36,69),U(4,64,69),U(5,42,56),U(10,58,56),U(9,50,43),...commonOpp],ball:[50,75],paths:[]}
+      ],
+      presionRival:[
+        {label:"Presión alta",pieces:[U(1,50,94),U(2,50,79),U(3,12,66),U(4,88,66),U(5,68,59),U(10,55,40),U(9,50,17),...commonOpp],ball:[50,76],paths:[]},
+        {label:"El 4 sostiene",tone:"good",pieces:[U(1,50,94),U(2,50,79),U(3,10,62),U(4,88,52),U(5,70,65),U(10,58,38),U(9,50,17),...commonOpp],ball:[86,50],paths:[[50,77,87,53],[87,51,59,39]]},
+        {label:"Conservamos el ancho",tone:"good",pieces:[U(1,50,94),U(2,50,79),U(3,9,57),U(4,88,52),U(5,71,65),U(10,58,38),U(9,50,17),...commonOpp],ball:[86,50],paths:[[87,51,10,58]]},
+        {label:"Pase siguiente",tone:"good",pieces:[U(1,50,94),U(2,50,79),U(3,9,57),U(4,88,52),U(5,71,65),U(10,55,34),U(9,50,17),...commonOpp],ball:[86,50],paths:[[71,64,55,35],[87,51,56,35]]}
+      ],
+      recuperada:[
+        {label:"Recuperación",pieces:[U(1,50,94),U(2,50,77),U(3,18,62),U(4,82,70),U(5,48,61),U(10,38,45),U(9,52,25),...commonOpp],ball:[20,60],paths:[[19,61,30,48]]},
+        {label:"Atacamos el centro",tone:"good",pieces:[U(1,50,94),U(2,50,77),U(3,30,48),U(4,82,70),U(5,48,61),U(10,49,33),U(9,68,18),...commonOpp],ball:[30,46],paths:[[38,45,49,34],[52,25,67,19]]},
+        {label:"Descarga al medio",tone:"good",pieces:[U(1,50,94),U(2,50,77),U(3,30,48),U(4,82,70),U(5,50,54),U(10,49,33),U(9,68,18),...commonOpp],ball:[30,46],paths:[[30,47,49,54]]},
+        {label:"Proyección contraria",tone:"good",pieces:[U(1,50,94),U(2,50,77),U(3,30,48),U(4,91,35),U(5,50,54),U(10,49,33),U(9,68,18),...commonOpp],ball:[30,46],paths:[[82,69,90,36],[30,47,89,36]]}
+      ],
+      defensa:[
+        {label:"Presión inicial",pieces:[U(10,18,34),U(9,50,31),U(5,82,34),U(3,22,63),U(2,50,67),U(4,78,63),T(1,50,7),T(4,18,20),T(2,50,18),T(3,82,20),T(10,30,43),T(5,70,43),T(9,50,57)],ball:[50,5],paths:[[18,34,18,21],[50,31,50,19],[82,34,82,21],[22,62,39,55],[78,62,61,55]]},
+        {label:"Salida por banda",tone:"good",pieces:[U(10,18,28),U(9,50,31),U(5,57,39),U(3,29,56),U(2,50,64),U(4,71,56),T(1,50,7),T(4,18,20),T(2,50,18),T(3,82,20),T(10,31,42),T(5,69,42),T(9,50,55)],ball:[18,18],paths:[[50,7,19,18],[18,29,18,20],[82,34,58,39]]},
+        {label:"Última línea achica",tone:"good",pieces:[U(10,18,28),U(9,50,31),U(5,57,39),U(3,31,49),U(2,50,57),U(4,69,49),T(1,50,7),T(4,18,20),T(2,50,18),T(3,82,20),T(10,31,41),T(5,69,41),T(9,50,50)],ball:[18,18],paths:[[22,63,30,50],[78,63,70,50]]},
+        {label:"Temporizar juntos",tone:"warn",pieces:[U(10,37,47),U(9,50,38),U(5,63,47),U(3,34,61),U(2,50,67),U(4,66,61),T(1,50,7),T(4,18,20),T(2,50,18),T(3,82,20),T(10,28,37),T(5,72,37),T(9,50,56)],ball:[28,35],paths:[[18,28,36,46],[57,39,62,46],[31,49,34,60],[69,49,66,60]]},
+        {label:"Primer duelo",tone:"warn",pieces:[U(10,31,55),U(8,69,55),U(3,22,72),U(2,50,53),U(4,78,72),T(1,50,7),T(4,18,20),T(2,50,18),T(3,82,20),T(10,31,36),T(5,69,36),T(9,50,46)],ball:[50,42],paths:[[50,8,50,41],[50,53,50,47]]},
+        {label:"Segunda pelota",tone:"good",pieces:[U(10,38,48),U(8,62,48),U(3,28,66),U(2,50,58),U(4,72,66),T(1,50,7),T(4,18,20),T(2,50,18),T(3,82,20),T(10,42,42),T(5,58,42),T(9,50,51)],ball:[50,48],paths:[[31,55,48,49],[69,55,52,49],[22,72,27,67],[78,72,73,67]]}
+      ]
+    };
+    function board(story){
+      const pitch=story.querySelector(".pitch");
+      pitch.innerHTML='<div class="box top"></div><div class="box bottom"></div><div class="goal top"></div><div class="goal bottom"></div><svg class="paths" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true"></svg><div class="status"></div><div class="ball"></div><div class="legend"><span><i class="red"></i>Nosotros</span><span><i class="black"></i>Rival</span></div>';
+      const steps=[...story.querySelectorAll(".step")],states=scenarios[story.dataset.story],status=pitch.querySelector(".status"),ball=pitch.querySelector(".ball"),svg=pitch.querySelector(".paths"),marker="arrow-"+story.dataset.story;
+      svg.innerHTML=`<defs><marker id="${marker}" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" fill="#197448"></path></marker></defs>`;
+      const pieces=Array.from({length:14},()=>{const el=document.createElement("div");pitch.append(el);return el});
+      const paths=Array.from({length:6},()=>{const p=document.createElementNS("http://www.w3.org/2000/svg","path");p.setAttribute("class","path");p.setAttribute("marker-end",`url(#${marker})`);svg.append(p);return p});
+      const place=(el,x,y)=>{el.style.setProperty("--x",x+"%");el.style.setProperty("--y",y+"%");};
+      function show(index){const state=states[index];status.textContent=state.label;status.className="status "+(state.tone||"");pieces.forEach((el,i)=>{const p=state.pieces[i];el.style.opacity=p?1:0;if(!p)return;el.className="piece "+p.side+(p.role?" role":"");el.textContent=p.label;place(el,p.x,p.y)});place(ball,...state.ball);paths.forEach((p,i)=>{const q=state.paths[i];if(!q){p.classList.remove("visible");return}p.setAttribute("d",`M ${q[0]} ${q[1]} Q ${(q[0]+q[2])/2+2} ${(q[1]+q[3])/2} ${q[2]} ${q[3]}`);p.classList.add("visible")})}
+      const observer=new IntersectionObserver(entries=>{const hit=entries.filter(e=>e.isIntersecting).sort((a,b)=>b.intersectionRatio-a.intersectionRatio)[0];if(!hit)return;const i=steps.indexOf(hit.target);steps.forEach(s=>s.classList.toggle("active",s===hit.target));show(i)},{rootMargin:"-35% 0px -35% 0px",threshold:[0,.25,.5,.75,1]});
+      steps.forEach(s=>observer.observe(s));show(0);
+    }
+    document.querySelectorAll(".story").forEach(board);
+  </script>
+</body>
+</html>
